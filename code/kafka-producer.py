@@ -1,4 +1,4 @@
-#!/usr/env/bin python
+#!/usr/bin/env python
 
 import confluent_kafka
 
@@ -9,12 +9,13 @@ with open('messages', 'rt') as f:
 messages = [line.strip() for line in lines]
 
 # Kafka broker address and port
-config = {'bootstrap.servers': 'localhost:9092'}
+config = {
+    'bootstrap.servers': 'localhost:9092',
+    'api.version.request': False
+}
 
 p = confluent_kafka.Producer(config)
-print(messages)
 for m in messages:
-    print(m)
     p.produce('test_topic', m)
 
 p.flush()

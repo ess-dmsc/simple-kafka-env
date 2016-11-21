@@ -37,7 +37,8 @@ On the producer screen, type a message and press `Return`. You should receive
 it on the consumer screen.
 
 
-## Running the python scripts
+## Running the Python scripts
 
-Start the Kafka consumer, then run the producer; this will send the messages in
-the file *messages*.
+The Python scripts are available in the */home/vagrant/code* directory. Start
+the Kafka consumer, then run the producer; this will send the messages in the
+file *messages*.

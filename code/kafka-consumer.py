@@ -1,4 +1,4 @@
-#!/usr/env/bin python
+#!/usr/bin/env python
 
 import confluent_kafka
 
@@ -6,6 +6,7 @@ import confluent_kafka
 config = {
     'bootstrap.servers': 'localhost:9092', # Kafka broker address and port
     'group.id': 'mygroup',
+    'api.version.request': False,
     'default.topic.config': {
         'auto.offset.reset': 'smallest',
     },
