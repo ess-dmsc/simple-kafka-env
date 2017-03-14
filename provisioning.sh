@@ -9,7 +9,7 @@ gpgcheck=0
 EOF
 
 yum install -y epel-release
-yum install -y java zookeeper kafka librdkafka-devel
+yum install -y java dm-zookeeper dm-kafka dm-librdkafka-devel
 
 yum install -y python-pip python-devel
 pip install confluent-kafka
