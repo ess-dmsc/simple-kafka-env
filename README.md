@@ -35,10 +35,3 @@ In the other terminal window, start a producer with
 
 On the producer screen, type a message and press `Return`. You should receive
 it on the consumer screen.
-
-
-## Running the Python scripts
-
-The Python scripts are available in the */home/vagrant/code* directory. Start
-the Kafka consumer, then run the producer; this will send the messages in the
-file *messages*.

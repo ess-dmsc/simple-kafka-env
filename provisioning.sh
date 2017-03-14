@@ -1,11 +1,19 @@
 #!/bin/bash
 
+IP_ADDRESS=$1
+
 # Add DM Jenkins RPM repo
 cat <<EOF > /etc/yum.repos.d/dm-jenkins.repo
 [dm-jenkins]
 name=Data Management Jenkins
 baseurl=https://jenkins.esss.dk/dm/job/dm-repo-stable/lastSuccessfulBuild/artifact/repo
 gpgcheck=0
+EOF
+
+cat > /etc/hosts <<EOF
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+$IP_ADDRESS kafka-env kafka-env
 EOF
 
 mkdir -p /etc/opt/dm_group/{kafka,zookeeper}
