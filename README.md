@@ -1,7 +1,6 @@
 # Apache Kafka demonstration environment
 
-A simple virtual machine environment with an Apache Kafka installation and
-some sample scripts.
+A simple virtual machine environment with an Apache Kafka installation.
 
 
 ## Requirements
@@ -16,9 +15,6 @@ some sample scripts.
 2. Log into it with `vagrant ssh`.
 3. Start Apache ZooKeeper by running `sudo systemctl start dm-zookeeper`.
 4. Start Apache Kafka by running `sudo systemctl start dm-kafka`.
-
-The *code* folder contains some scripts demonstrating how to use Apache Kafka
-with the *confluent-python* package.
 
 
 ## Manually checking Kafka is working
