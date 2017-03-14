@@ -12,4 +12,4 @@ yum install -y epel-release
 yum install -y java dm-zookeeper dm-kafka dm-librdkafka-devel python-pip
 
 yum install -y python-pip python-devel
-pip install confluent-kafka
+pip install kafka-python
