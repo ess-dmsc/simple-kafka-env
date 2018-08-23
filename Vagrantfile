@@ -4,8 +4,7 @@ Vagrant.configure(2) do |config|
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
   config.vm.define "kafka-env" do |dm|
-    dm.vm.box = "esss/centos-7.1-desktop"
-    dm.vm.synced_folder "code", "/home/vagrant/code", owner: "vagrant", create: "true"
+    dm.vm.box = "centos/7"
     dm.vm.hostname = "kafka-env"
     dm.vm.network "private_network", ip: "#{IP}"
 
@@ -18,5 +17,4 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.provision "shell", "keep_color": true, "path": "provisioning.sh", args: "#{IP}"
-
 end
