@@ -6,7 +6,7 @@ IP_ADDRESS=$1
 cat <<EOF > /etc/yum.repos.d/dm-jenkins.repo
 [dm-jenkins]
 name=Data Management Jenkins
-baseurl=https://jenkins.esss.dk/dm/job/dm-repo-stable/lastSuccessfulBuild/artifact/repo
+baseurl=https://jenkins.esss.dk/dm/job/ess-dmsc/job/dm-rpms/job/master/lastSuccessfulBuild/artifact/rpms/
 gpgcheck=0
 EOF
 
@@ -58,6 +58,7 @@ cat <<EOF > /etc/opt/dm_group/kafka/server.properties
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 # see kafka.server.KafkaConfig for additional details and defaults
 
 ############################# Server Basics #############################
@@ -65,12 +66,15 @@ cat <<EOF > /etc/opt/dm_group/kafka/server.properties
 # The id of the broker. This must be set to a unique integer for each broker.
 broker.id=0
 
+# Switch to enable topic deletion or not, default value is false
+delete.topic.enable=true
+
 ############################# Socket Server Settings #############################
 
 # The address the socket server listens on. It will get the value returned from
 # java.net.InetAddress.getCanonicalHostName() if not configured.
 #   FORMAT:
-#     listeners = security_protocol://host_name:port
+#     listeners = listener_name://host_name:port
 #   EXAMPLE:
 #     listeners = PLAINTEXT://your.host.name:9092
 listeners=PLAINTEXT://:9092
@@ -80,10 +84,13 @@ listeners=PLAINTEXT://:9092
 # returned from java.net.InetAddress.getCanonicalHostName().
 #advertised.listeners=PLAINTEXT://your.host.name:9092
 
-# The number of threads handling network requests
+# Maps listener names to security protocols, the default is for them to be the same. See the config documentation for more details
+#listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+
+# The number of threads that the server uses for receiving requests from the network and sending responses to the network
 num.network.threads=3
 
-# The number of threads doing disk I/O
+# The number of threads that the server uses for processing requests, which may include disk I/O
 num.io.threads=8
 
 # The send buffer (SO_SNDBUF) used by the socket server
@@ -110,6 +117,13 @@ num.partitions=1
 # This value is recommended to be increased for installations with data dirs located in RAID array.
 num.recovery.threads.per.data.dir=1
 
+############################# Internal Topic Settings  #############################
+# The replication factor for the group metadata internal topics "__consumer_offsets" and "__transaction_state"
+# For anything other than development testing, a value greater than 1 is recommended for to ensure availability such as 3.
+offsets.topic.replication.factor=1
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
+
 ############################# Log Flush Policy #############################
 
 # Messages are immediately written to the filesystem but by default we only fsync() to sync
@@ -134,19 +148,19 @@ num.recovery.threads.per.data.dir=1
 # A segment will be deleted whenever *either* of these criteria are met. Deletion always happens
 # from the end of the log.
 
-# The minimum age of a log file to be eligible for deletion
-log.retention.hours=4
+# The minimum age of a log file to be eligible for deletion due to age
+log.retention.hours=1
 
 # A size-based retention policy for logs. Segments are pruned from the log as long as the remaining
-# segments don't drop below log.retention.bytes.
-log.retention.bytes=10737418240
+# segments don't drop below log.retention.bytes. Functions independently of log.retention.hours.
+log.retention.bytes=4294967296
 
 # The maximum size of a log segment file. When this size is reached a new log segment will be created.
 log.segment.bytes=1073741824
 
 # The interval at which log segments are checked to see if they can be deleted according
 # to the retention policies
-log.retention.check.interval.ms=300000
+log.retention.check.interval.ms=60000
 
 ############################# Zookeeper #############################
 
@@ -160,12 +174,26 @@ zookeeper.connect=localhost:2181
 # Timeout in ms for connecting to zookeeper
 zookeeper.connection.timeout.ms=6000
 
-delete.topic.enable=true
+
+############################# Group Coordinator Settings #############################
+
+# The following configuration specifies the time, in milliseconds, that the GroupCoordinator will delay the initial consumer rebalance.
+# The rebalance will be further delayed by the value of group.initial.rebalance.delay.ms as new members join the group, up to a maximum of max.poll.interval.ms.
+# The default value for this is 3 seconds.
+# We override this to 0 here as it makes for a better out-of-the-box experience for development and testing.
+# However, in production environments the default value of 3 seconds is more suitable as this will help to avoid unnecessary, and potentially expensive, rebalances during application startup.
+group.initial.rebalance.delay.ms=0
 
 ############################# Message Size #############################
 
 message.max.bytes=16777216
 replica.fetch.max.bytes=16777216
+
+############################# Metrics #############################
+
+kafka.metrics.reporters=com.criteo.kafka.KafkaGraphiteMetricsReporter
+
+kafka.graphite.metrics.reporter.enabled=false
 EOF
 
 yum install -y epel-release
@@ -173,3 +201,9 @@ yum install -y java dm-zookeeper dm-kafka python-pip
 
 yum install -y python-pip python-devel
 pip install kafka-python
+
+systemctl enable dm-zookeeper
+systemctl enable dm-kafka
+
+systemctl start dm-zookeeper
+systemctl start dm-kafka
