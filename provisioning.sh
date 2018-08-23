@@ -169,7 +169,7 @@ replica.fetch.max.bytes=16777216
 EOF
 
 yum install -y epel-release
-yum install -y java dm-zookeeper dm-kafka dm-librdkafka-devel python-pip
+yum install -y java dm-zookeeper dm-kafka python-pip
 
 yum install -y python-pip python-devel
 pip install kafka-python
