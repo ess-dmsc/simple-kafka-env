@@ -105,7 +105,7 @@ socket.request.max.bytes=104857600
 
 ############################# Log Basics #############################
 
-# A comma seperated list of directories under which to store log files
+# A comma separated list of directories under which to store log files
 log.dirs=/var/opt/dm_group/kafka
 
 # The default number of log partitions per topic. More partitions allow greater
@@ -131,7 +131,7 @@ transaction.state.log.min.isr=1
 # There are a few important trade-offs here:
 #    1. Durability: Unflushed data may be lost if you are not using replication.
 #    2. Latency: Very large flush intervals may lead to latency spikes when the flush does occur as there will be a lot of data to flush.
-#    3. Throughput: The flush is generally the most expensive operation, and a small flush interval may lead to exceessive seeks.
+#    3. Throughput: The flush is generally the most expensive operation, and a small flush interval may lead to excessive seeks.
 # The settings below allow one to configure the flush policy to flush data after a period of time or
 # every N messages (or both). This can be done globally and overridden on a per-topic basis.
 
@@ -197,7 +197,7 @@ kafka.graphite.metrics.reporter.enabled=false
 EOF
 
 yum install -y epel-release
-yum install -y java dm-zookeeper dm-kafka python-pip
+yum install -y java dm-zookeeper dm-kafka-2.0.0 python-pip
 
 yum install -y python-pip python-devel
 pip install kafka-python
